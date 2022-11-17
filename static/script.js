@@ -6,10 +6,10 @@ function listing() {    //서버로부터 데이터 GET
     $('#cards-box').empty()
     $.ajax({
         type: 'GET',
-        url: '/team4',
+        url: '/sung',
         data: {},
         success: function (response) {
-            let rows = response['teams']
+            let rows = response['sung']
             for (let i = 0; i < rows.length; i++) {
                 let name = rows[i]['name']     //이름 변수
                 let star = rows[i]['star']
@@ -48,7 +48,7 @@ function posting() {    //방명록 기록하기 버튼 클릭 시 POST
 
     $.ajax({
         type: 'POST',
-        url: '/team4',
+        url: '/sung',
         data: {'name_give': name, 'star_give': star, 'comment_give': comment, 'randomNum_give': randomNum},
         success: function (response) {
             alert(response['msg'])
@@ -60,7 +60,7 @@ function posting() {    //방명록 기록하기 버튼 클릭 시 POST
 function data_delete(num) {    //방명록 삭제 버튼 클릭시 num_give POST
     $.ajax({
         type: 'POST',
-        url: '/team4/delete',
+        url: '/sung/delete',
         data: {'num_give': num},
         success: function (response) {
             alert(response['msg'])
