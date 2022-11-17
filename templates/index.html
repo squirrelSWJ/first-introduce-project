@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <title>스파르타 피디아</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@700&family=Jua&family=Noto+Serif+KR:wght@200&display=Gowun+Dodum&display=swap"
+          rel="stylesheet">
+
+    <script>
+        $(document).ready(function () {
+            listing();
+        });
+
+        function listing() {    //서버로부터 데이터 GET
+            $('#cards-box').empty()
+            $.ajax({
+                type: 'GET',
+                url: '/team4',
+                data: {},
+                success: function (response) {
+                    let rows = response['teams']
+                    for (let i = 0; i < rows.length; i++) {
+                        let name = rows[i]['name']     //이름 변수
+                        let star = rows[i]['star']
+                        let comment = rows[i]['comment']//코멘트 변수
+                        let num = rows[i]['num']        //선택한 데이터 삭제하기 위한 번호 기록 변수
+                        let randomNum = rows[i]['randomNum']//이미지 랜덤출력을위한 1~8 사이 숫자를 가진 변수
+
+                        let star_image = '⭐'.repeat(star) //평점 변수
+
+                        let temp_html = `<div class="col">
+                                            <div class="card h-100" style="margin-bottom :25px">
+                                                <img src="http://squirrelswj.shop/static/` + randomNum + `.png" class="card-img-top" alt="">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">${name}</h5><p class="card-star">${star_image}</p>
+                                                    <p class="card-text"><hr></p>
+                                                    <p class="mycomment">${comment}</p>
+                                                    <div class="delete-btn">
+                                                        <button onclick="data_delete(${num})" type="button" class="btn btn-outline-secondary">삭제</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>`
+                        $('#cards-box').append(temp_html)
+                    }
+                }
+            })
+        }
+
+        function posting() {    //방명록 기록하기 버튼 클릭 시 POST
+            let name = $('#name').val()
+            let star = $('#star').val()
+            let comment = $('#comment').val()
+
+            let randomNum = Math.floor((Math.random() * 10));     //랜덤이미지를 위한 1~8까지 랜덤숫자
+            randomNum = parseInt(randomNum % 8) + 1;
+
+            $.ajax({
+                type: 'POST',
+                url: '/team4',
+                data: {'name_give': name, 'star_give': star, 'comment_give': comment, 'randomNum_give': randomNum},
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function data_delete(num) {    //방명록 삭제 버튼 클릭시 num_give POST
+            $.ajax({
+                type: 'POST',
+                url: '/team4/delete',
+                data: {'num_give': num},
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function open_box() {   //방명록 기록하기 hidden해제
+            $('#post-box').show()
+        }
+
+        function close_box() {  //방명록 기록하기 hidden
+            $('#post-box').hide()
+        }
+
+    </script>
+</head>
+
+<body>
+<div class="mytitle">
+    <h1>안녕하세요 A반 8조 정성욱 입니다</h1>
+</div>
+
+<div class="box">
+    <nav class="my1">
+        <img src="http://squirrelswj.shop/static/sungwookjung.jpg">
+        <br>
+        <h3>정 성 욱</h3>
+        <p>내일배움캠프 A반 8조 정성욱 입니다<br>열심히 해서 많이 배워 가겠습니다!!</p>
+        <a href="https://velog.io/@squirrelswj" id="blog" target='_blank'>개인 블로그</a>
+    </nav>
+    <nav class="my2">
+        <div class="title">
+            <div>
+                &lt;나의 MBTI 및 성격&gt;
+            </div>
+            저의 MBTI는 ISFP 입니다. ISFP는 MBTI중에서 가장 순하다고 평가받는 유형이라고 합니다.
+            특유의 '좋은게 좋은거지!' 라는 생각과 '일 크게 벌이지 말자'는 마인드를 갖고 있기때문에
+            남들이 볼때 화를 낼 만한 상황인데도 불구하고 그냥 넘어가는 경우가 많다고 합니다.
+
+
+            </p>
+        </div>
+        <div class="title">
+            <div>
+                &lt;나의 장점&gt;
+            </div>
+            <p>내성적이고 소심한 성격 때문인지 타인과의 트러블이 적은 편 입니다. 그리고 잘 모르는 것이 있으면
+                바로 바로 찾아보는 습관이 있습니다. 또한 헷갈리거나 이해가 되지 않는 부분이 있으면 이해가 될 때까지
+                끊임 없이 파고 드는 성격이 장점이라고 볼 수 있을것 같습니다.
+            </p>
+        </div>
+        <div class="title">
+            <div>
+                &lt;나의 협업스타일&gt;
+            </div>
+            <p>팀원들과 의사소통할때 주로 경청하는 스타일 입니다. 하지만 더 나은 방법이 있진 않을까 끊임없이 스스로 되물으며
+                괜찮은 아이디어라고 판단되면 과감히 의견제시를 하는 편입니다.
+            </p>
+        </div>
+    </nav>
+</div>
+
+
+<div class="mycards">
+    <button onclick="open_box()">방명록 기록하기</button>
+    <div class="mypost" id="post-box">
+        <div class="form-floating mb-3">
+            <input id="name" type="email" class="form-control" placeholder="name@example.com">
+            <label>이름</label>
+        </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelect01">별점</label>
+            <select class="form-select" id="star">
+                <option selected>-- 선택하기 --</option>
+                <option value="1">⭐</option>
+                <option value="2">⭐⭐</option>
+                <option value="3">⭐⭐⭐</option>
+                <option value="4">⭐⭐⭐⭐</option>
+                <option value="5">⭐⭐⭐⭐⭐</option>
+            </select>
+        </div>
+        <div class="form-floating">
+            <textarea id="comment" class="form-control" placeholder="Leave a comment here"
+                      style="height:150px;"></textarea>
+            <label for="floatingTextarea2">코멘트</label>
+        </div>
+        <div class="mybtns">
+            <button onclick="posting()" type="button" class="btn btn-dark">기록하기</button>
+            <button onclick="close_box()" type="button" class="btn btn-outline-dark">닫기</button>
+        </div>
+    </div>
+    <div class="row row-cols-1 row-cols-md-4 g-3" id="cards-box">
+    </div>
+</div>
+</body>
+
+</html>
